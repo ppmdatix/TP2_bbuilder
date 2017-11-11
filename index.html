@@ -68,8 +68,8 @@
        .append("text")
         .text(function(d, i) { return displayValue(d.value); })
         .attr("class", "value")
-        .attr("y", function(d) { return y(d.value); })
-        .attr("x", width + 10)
+        .attr("y", function(d) { return y(d.value) - 30; })
+        .attr("x", width + 30)
         .style("font-size", 20)
         .style("font-family", "monospace");
 
@@ -87,6 +87,7 @@
       					.style("fill","grey")
       					.style("fill-opacity",0.1)
 								;
+      
       g.selectAll(".value").data(data).enter()
        .append("text")
         .text(function(d, i) { return displayValue(d.value); })
@@ -95,6 +96,20 @@
         .attr("x", function(d) { return x(d.date) + 10; } )
         .style("font-size", 10)
         .style("font-family", "monospace");
+      
+      
+      g.selectAll("line").data(data).enter().append("line")
+        .attr("x2",function(d) { return x(d.date); })
+        .attr("y2",function(d) { return y(d.value); })
+     		.attr("x1",function(d) { return x(d.date); })
+      	.attr("y1",420)
+				.attr("stroke","grey")
+      .attr("fill","transparent")
+      .attr("stroke-width",1)
+      .attr("stroke-dasharray",4)
+					;
+      
+      
     });
 
 
