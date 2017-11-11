@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    .line {
+      fill: none;
+      stroke: black;
+      stroke-width: 1.5px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", 960)
+      .attr("height", 500);
+
+    var width = 800;
+    var height = 400;
+
+    // See formats http://bl.ocks.org/zanarmstrong/raw/05c1e95bf7aa16c4768e/
+    // Data sample {"name": "G", "value": 10, "date": "2016-07"}
+    var parseDate = d3.timeParse("%Y-%m");
+    var displayDate = d3.timeFormat("%b %y");
+    var displayValue = d3.format(",.0f");
+    
+    // Ordinal scale
+    var x = d3.scaleTime()
+        .range([0, width]);
+
+		// Linear scale
+    var y = d3.scaleLinear()
+        .range([height, height - 200]);
+
+    var line = d3.line()
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y(d.value); });
+    
+    var g = svg.append("g")
+    	.attr("transform", "translate(50, 0)")
+    
+   	d3.json("dataset.json", function(error, data) {
+	  	if (error) throw error;
+
+      // Pre-processing
+      data.forEach(function(d) {
+				d.value = +d.value;
+        d["date"] = parseDate(d["date"]);
+      });
+      
+      x.domain(d3.extent(data, function(d) { return d.date; }));
+			y.domain([0, d3.max(data, function(d) { return d.value; })]);
+      
+      svg.selectAll(".label").data(data).enter()
+       .append("text")
+      	.attr("class", "label")
+        .text(function(d, i) { return displayDate(d.date); })
+        .attr("y", 420)
+        .attr("x", function(d) { return x(d.date); })
+        .style("font-size", 10)
+        .style("font-family", "monospace");
+
+      // Display last value
+      g.selectAll(".value").data([data[data.length -1]]).enter()
+       .append("text")
+        .text(function(d, i) { return displayValue(d.value); })
+        .attr("class", "value")
+        .attr("y", function(d) { return y(d.value); })
+        .attr("x", width + 10)
+        .style("font-size", 20)
+        .style("font-family", "monospace");
+
+      g.selectAll(".line").data([data]).enter().append("path")
+        .attr("class", "line")
+        .attr("d", line);
+
+    });
+
+  </script>
+</body>
