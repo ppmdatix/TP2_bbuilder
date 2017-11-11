@@ -88,13 +88,17 @@
       		.style("fill-opacity",0.1)
       		.on("mouseover", function(d, i) {
       					d3.select(this).style("fill", "red")
-                d3.select(this).style("fill-opacity",1);
+                d3.select(this).style("fill-opacity",1)
+                d3.select("#line" + i).transition().attr("stroke-width",1)
+                d3.select("#value" + i).transition().style("font-size", 10)
         				;
 																					}
              )
     			.on("mouseout", function(d, i) {
       				d3.select(this).transition().duration(0).style("fill-opacity",0.1)
               d3.select(this).transition().duration(0).style("fill", "grey")
+              d3.select("#line" + i).transition().attr("stroke-width",0)
+              d3.select("#value" + i).transition().style("font-size", 0)
       																		})
 						
       ;
@@ -105,8 +109,9 @@
         .attr("class", "value")
         .attr("y", function(d) { return y(d.value) - 10; } )
         .attr("x", function(d) { return x(d.date) + 10; } )
-        .style("font-size", 10)
-        .style("font-family", "monospace");
+        .style("font-size", 0)
+        .style("font-family", "monospace")
+      	.attr("id", function(d,i){ return "value"+i});
       
       
       g.selectAll("line").data(data).enter().append("line")
@@ -116,8 +121,9 @@
       	.attr("y1",420)
 				.attr("stroke","grey")
       .attr("fill","transparent")
-      .attr("stroke-width",1)
+      .attr("stroke-width",0)
       .attr("stroke-dasharray",4)
+      .attr("id", function(d,i){ return "line"+i})
 					;
       
       
